@@ -9,6 +9,9 @@
 <body>
     <form id="form1" runat="server">
     <div>
+        <asp:Button ID="btnHome" runat="server" Text="Home" OnClick="btnHome_Click" style="height: 26px" />
+    </div>
+    <div>
         <h1>
             <asp:Label ID="lblTitel" runat="server" Text="Titel"></asp:Label>
         </h1>
@@ -42,7 +45,10 @@
         <p>Submitted: <asp:Label ID="lblDatum" runat="server" Text="##/##/##"></asp:Label>
         </p>
     </div>
-    <div> Tags: </div>
+    <div> Tags: 
+        <asp:Panel ID="pnlTags" runat="server">
+        </asp:Panel>
+        </div>
     <div> Channel: </div>
     <div>
         <h1>Comments(<asp:Label ID="lblComAmount" runat="server" Text="###"></asp:Label>):

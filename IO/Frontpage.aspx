@@ -10,7 +10,10 @@
     <form id="form1" runat="server">
     <div style="height: 123px">
     
-        <asp:Button ID="btnHome" runat="server" OnClick="btnHome_Click" Text="Home" /><br />
+        <asp:Button ID="btnHome" runat="server" OnClick="btnHome_Click" Text="Home" />
+        <br />
+        <asp:Button ID="btnUploadContent" runat="server" OnClick="btnUploadContent_Click" Text="Upload content" />
+        <br />
         <asp:Button ID="btnRegLog" runat="server" OnClick="btnRegLog_Click" Text="Register/ Login" />
     
         <br />

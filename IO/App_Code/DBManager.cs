@@ -47,4 +47,5 @@ public class DBManager
         command.CommandType = CommandType.StoredProcedure;
         return command;
     }
+
 }

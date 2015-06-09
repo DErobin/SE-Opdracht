@@ -22,6 +22,7 @@ public class Content
 
     public List<Header> Headers {get; set;}
     public List<Comment> Comments { get; set; }
+    public List<Tag> Tags { get; set; }
 	public Content(int contentid, int uploaderid, string titel, string beschrijving, int views, string datum, string uploaderusername, int thumbs, int favorites)
 	{
         ContentID = contentid;

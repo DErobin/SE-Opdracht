@@ -20,12 +20,14 @@ public partial class Frontpage : System.Web.UI.Page
             if(Session["Logged_In"] == null)
             {
                 btnMyAccount.Enabled = false;
+                btnUploadContent.Enabled = false;
                 lblLoggedIn.Text = "Currently logged in: -";
             }
             else
             {
                 User user = Session["Logged_In"] as User;
                 btnMyAccount.Enabled = true;
+                btnUploadContent.Enabled = true;
                 lblLoggedIn.Text = "Currently logged in: " + user.Username;
                 btnRegLog.Text = "Log Out";
             }
@@ -124,5 +126,9 @@ public partial class Frontpage : System.Web.UI.Page
         User user = Session["Logged_In"] as User;
         string redir = "~/Profile.aspx?Username=" + user.Username;
         Response.Redirect(redir);
+    }
+    protected void btnUploadContent_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/UploadContent.aspx");
     }
 }

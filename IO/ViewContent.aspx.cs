@@ -27,6 +27,8 @@ public partial class ViewContent : System.Web.UI.Page
         Content content = DBHandler.Content_Fetch(ContentID);
         content.Headers = DBHandler.Content_FetchHeaders(content);
         content.Comments = DBHandler.Content_FetchComments(content);
+        content.Tags = DBHandler.Content_FetchTags(content);
+
         if(content.Headers != null)
         {
             for (int i = 0; i < content.Headers.Count;i++ )
@@ -107,6 +109,16 @@ public partial class ViewContent : System.Web.UI.Page
         }
         else lblComAmount.Text = "0";
 
+        if(content.Tags != null)
+        {
+            for(int i=0; i<content.Tags.Count; i++)
+            {
+                Label tag = new Label();
+                tag.Text = content.Tags[i].TagName + ", ";
+                pnlTags.Controls.Add(tag);
+            }
+        }
+
 
         lblTitel.Text = content.Titel;
         lblConDescription.Text = content.Beschrijving;
@@ -118,5 +130,9 @@ public partial class ViewContent : System.Web.UI.Page
         lblViews.Text = Convert.ToString(content.Views);
         lblFavorites.Text = Convert.ToString(content.Favorites);
         lblDatum.Text = content.Datum;
+    }
+    protected void btnHome_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/Frontpage.aspx");
     }
 }

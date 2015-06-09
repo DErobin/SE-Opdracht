@@ -204,6 +204,43 @@ public class DBHandler
             return true;
     }
 
+    static public int Content_Upload(int uploaderid, string titel, string description)
+    {
+        OracleCommand cmd = DBManager.ExecuteProcedure("Content_Upload");
+
+        cmd.Parameters.Add("Uploaderid", OracleDbType.Int32).Value = uploaderid;
+        cmd.Parameters.Add("Titel", OracleDbType.NVarchar2).Value = titel;
+        cmd.Parameters.Add("Beschrijving", OracleDbType.NVarchar2).Value = description;
+
+        OracleDataAdapter oda = new OracleDataAdapter(cmd);
+        cmd.ExecuteNonQuery();
+
+        string query = "Select * from Content_ where Uploaderid = " + uploaderid + " and Titel = '" + titel + "' and Beschrijving = '" + description + "'";
+        OracleDataReader dbr = DBManager.ExecuteQuery(query);
+        if (!dbr.HasRows)
+        {
+            return -1;
+        }
+        else while(dbr.Read())
+        {
+            return Convert.ToInt32(dbr["ContentID"].ToString());
+        }
+        return -1;
+    }
+
+    static public void Content_UploadHeaders(int contentid, string titel, int soortcontent, string text, string path)
+    {
+        OracleCommand cmd = DBManager.ExecuteProcedure("Content_CreateHeader");
+
+        cmd.Parameters.Add("contentid", OracleDbType.Int32).Value = contentid;
+        cmd.Parameters.Add("Titel", OracleDbType.NVarchar2).Value = titel;
+        cmd.Parameters.Add("SOORTCONTENT", OracleDbType.Int32).Value = soortcontent;
+        cmd.Parameters.Add("tekst", OracleDbType.NVarchar2).Value = text;
+        cmd.Parameters.Add("path", OracleDbType.NVarchar2).Value = path;
+
+        OracleDataAdapter oda = new OracleDataAdapter(cmd);
+        cmd.ExecuteNonQuery();
+    }
     static public Content Content_Fetch(int contentid)
     {
         if (!Content_Exists(contentid))
@@ -219,7 +256,7 @@ public class DBHandler
         string username = "";
         int thumbs = 0;
         int favorites = 0;
-        string query2 = "select g.Gebruikersnaam, COALESCE(SUM(ct.Rating), 0) as conthumbs from Gebruiker g left join Content_ co on co.UploaderID = g.GebruikersID left join ContentThumb ct on ct.ContentID= co.ContentID where co.UploaderID = " + contentid + " group by g.Gebruikersnaam";
+        string query2 = "select g.Gebruikersnaam, COALESCE(SUM(ct.Rating), 0) as conthumbs from Gebruiker g left join Content_ co on co.UploaderID = g.GebruikersID left join ContentThumb ct on ct.ContentID= co.ContentID where co.ContentID = " + contentid + " group by g.Gebruikersnaam";
         OracleDataReader dbr2 = DBManager.ExecuteQuery(query2);
         if(dbr2.HasRows)
         {
@@ -285,6 +322,36 @@ public class DBHandler
             comments.Add(new Comment(dbr["commentid"].ToString(), dbr["contentid"].ToString(), dbr["plaatserid"].ToString(), dbr["gebruikersnaam"].ToString(), dbr["commentonid"].ToString(), dbr["thumbs"].ToString(), dbr["plaatje"].ToString(), dbr["beschrijving"].ToString()));
         }
         return comments;
+    }
+
+    static public List<Tag> Content_FetchTags(Content content)
+    {
+        if (!DBHandler.Content_Exists(content.ContentID))
+            return null;
+        string query = "select t.tagid, t.naam from Tag t join TagLink tl on t.tagid = tl.tagid where tl.contentid= " + content.ContentID;
+        OracleDataReader dbr = DBManager.ExecuteQuery(query);
+        if (!dbr.HasRows)
+            return null;
+        List<Tag> tags = new List<Tag>();
+        while(dbr.Read())
+        {
+            tags.Add(new Tag(Convert.ToInt32(dbr["tagid"].ToString()), dbr["naam"].ToString()));
+        }
+        return tags;
+    }
+
+    static public List<Tag> Content_FetchAllTags()
+    {
+        string query = "select * from Tag";
+        OracleDataReader dbr = DBManager.ExecuteQuery(query);
+        if (!dbr.HasRows)
+            return null;
+        List<Tag> tags = new List<Tag>();
+        while(dbr.Read())
+        {
+            tags.Add(new Tag(Convert.ToInt32(dbr["tagid"].ToString()), dbr["naam"].ToString()));
+        }
+        return tags;
     }
     //Frontpage related:
     static public DataTable Content_FrontpageDataSource()
