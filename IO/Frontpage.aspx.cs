@@ -21,6 +21,7 @@ public partial class Frontpage : System.Web.UI.Page
             {
                 btnMyAccount.Enabled = false;
                 btnUploadContent.Enabled = false;
+                btnInbox.Enabled = false;
                 lblLoggedIn.Text = "Currently logged in: -";
             }
             else
@@ -28,6 +29,7 @@ public partial class Frontpage : System.Web.UI.Page
                 User user = Session["Logged_In"] as User;
                 btnMyAccount.Enabled = true;
                 btnUploadContent.Enabled = true;
+                btnInbox.Enabled = true;
                 lblLoggedIn.Text = "Currently logged in: " + user.Username;
                 btnRegLog.Text = "Log Out";
             }
@@ -130,5 +132,13 @@ public partial class Frontpage : System.Web.UI.Page
     protected void btnUploadContent_Click(object sender, EventArgs e)
     {
         Response.Redirect("~/UploadContent.aspx");
+    }
+    protected void btnInbox_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/MyInbox.aspx");
+    }
+    protected void btnChannels_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/Channels.aspx");
     }
 }

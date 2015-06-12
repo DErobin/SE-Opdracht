@@ -16,36 +16,17 @@ public partial class UploadContent : System.Web.UI.Page
             Tags = new List<Tag>();
             AddedTags = new List<Tag>();
             Tags = DBHandler.Content_FetchAllTags();
-            ddlTag.DataSource = Tags;
-            ddlTag.DataTextField = "TagName";
-            ddlTag.DataValueField = "TagID";
-            ddlTag.DataBind();
-            Session["Upload_TagList"] = Tags;
-            Session["TagPanel"] = AddedTags;
-            Session["DDLItem"] = ddlTag.SelectedIndex;
+            lbTags.DataSource = Tags;
+            lbTags.DataTextField = "TagName";
+            lbTags.DataValueField = "TagID";
+            lbTags.DataBind();
+            //Session["Upload_TagList"] = Tags;
+            Session["AddedTags"] = AddedTags;
         }
         else
         {
-            
-            Tags = Session["Upload_TagList"] as List<Tag>;
-            ddlTag.DataSource = Tags;
-            ddlTag.DataTextField = "TagName";
-            ddlTag.DataValueField = "TagID";
-            ddlTag.DataBind();
-            ddlTag.SelectedIndex = Convert.ToInt32(Session["DDLItem"].ToString());
-
-
-            pnlTags.Controls.Clear();
-            AddedTags = Session["TagPanel"] as List<Tag>;
-            if (AddedTags != null)
-                for (int i = 0; i < AddedTags.Count; i++ )
-                {
-                    Label lbltagadd = new Label();
-                    lbltagadd.Text = AddedTags[i].TagName + ", ";
-                    pnlTags.Controls.Add(lbltagadd);
-                }
-
-
+            Tags = DBHandler.Content_FetchAllTags();
+            AddedTags = Session["AddedTags"] as List<Tag>;
         }
 
         switch(ddlMediaType.SelectedIndex)
@@ -77,6 +58,8 @@ public partial class UploadContent : System.Web.UI.Page
             if(contentid != -1)
             {
                 DBHandler.Content_UploadHeaders(contentid, tbHeaderTitel.Text, ddlMediaType.SelectedIndex, tbHeaderInput.Text, tbHeaderInput.Text);
+                Content content = DBHandler.Content_Fetch(contentid);
+                DBHandler.Content_UploadTags(AddedTags, content);
             }
             Response.Write("<script>alert('Content uploaded!')</script>");
             string redir = "~/ViewContent.aspx?ContentID=" + contentid;
@@ -86,16 +69,80 @@ public partial class UploadContent : System.Web.UI.Page
     }
     protected void btnAddTag_Click(object sender, EventArgs e)
     {
-        Tag tag = Tags[ddlTag.SelectedIndex];
-        AddedTags.Add(tag);
-        Session["TagPanel"] = AddedTags;
+        bool exists = false;
+        for (int j = 0; j < AddedTags.Count; j++ )
+        {
+            if (AddedTags[j].TagID == Tags[lbTags.SelectedIndex].TagID)
+                exists = true;
+        }
+
+        if (!exists)
+            AddedTags.Add(Tags[lbTags.SelectedIndex]);
+        
+        pnlTags.Controls.Clear();
+        for(int i=0; i<AddedTags.Count; i++)
+        {
+            Label label = new Label();
+            label.Text = AddedTags[i].TagName + ", ";
+            pnlTags.Controls.Add(label);
+        }
+        Session["AddedTags"] = AddedTags;
     }
     protected void ddlTag_SelectedIndexChanged(object sender, EventArgs e)
     {
-        Session["DDLItem"] = ddlTag.SelectedIndex;
     }
     protected void btnHome_Click(object sender, EventArgs e)
     {
         Server.Transfer("~/Frontpage.aspx");
+    }
+    protected void lbTags_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        
+    }
+    protected void btnRemove_Click(object sender, EventArgs e)
+    {
+        for(int i=0; i<AddedTags.Count; i++)
+        {
+            if (AddedTags[i].TagID == Tags[lbTags.SelectedIndex].TagID)
+                AddedTags.Remove(AddedTags[i]);
+        }
+        pnlTags.Controls.Clear();
+        for (int i = 0; i < AddedTags.Count; i++)
+        {
+            Label label = new Label();
+            label.Text = AddedTags[i].TagName + ", ";
+            pnlTags.Controls.Add(label);
+        }
+        Session["AddedTags"] = AddedTags;
+    }
+    protected void btnCreateTag_Click(object sender, EventArgs e)
+    {
+        if(tbNewTag.Text == null)
+        {
+            Response.Write("<script>alert('Please enter a tag!')</script>");
+            return;
+        }
+        if(DBHandler.Content_TagExists(tbNewTag.Text))
+        {
+            Response.Write("<script>alert('Tag already exists!')</script>");
+            return;
+        }
+        DBHandler.Content_CreateNewTag(tbNewTag.Text);
+        Response.Write("<script>alert('Tag created!')</script>");
+        Tags = DBHandler.Content_FetchAllTags();
+        lbTags.DataSource = Tags;
+        lbTags.DataTextField = "TagName";
+        lbTags.DataValueField = "TagID";
+        lbTags.DataBind();
+
+        pnlTags.Controls.Clear();
+        for (int i = 0; i < AddedTags.Count; i++)
+        {
+            Label label = new Label();
+            label.Text = AddedTags[i].TagName + ", ";
+            pnlTags.Controls.Add(label);
+        }
+        Session["AddedTags"] = AddedTags;
+
     }
 }

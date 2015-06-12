@@ -45,9 +45,13 @@
     <div>
         <h2>Customize Tags:</h2>
         <p>
-            <asp:DropDownList ID="ddlTag" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlTag_SelectedIndexChanged">
-            </asp:DropDownList>
+            <asp:ListBox ID="lbTags" runat="server" OnSelectedIndexChanged="lbTags_SelectedIndexChanged"></asp:ListBox>
             <asp:Button ID="btnAddTag" runat="server" Text="Add" OnClick="btnAddTag_Click" />
+            <asp:Button ID="btnRemove" runat="server" OnClick="btnRemove_Click" Text="Remove" />
+            
+        </p>
+        <p><asp:TextBox ID="tbNewTag" runat="server">New Tag</asp:TextBox>
+            <asp:Button ID="btnCreateTag" runat="server" OnClick="btnCreateTag_Click" Text="Create" />
         </p>
     </div>
     <div>

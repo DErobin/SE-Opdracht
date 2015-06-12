@@ -21,7 +21,7 @@
             <asp:ListItem>Moderator</asp:ListItem>
             <asp:ListItem>Administrator</asp:ListItem>
         </asp:DropDownList>
-        <asp:Button ID="btnChangeRightsLevel" runat="server" Text="Edit" />
+        <asp:Button ID="btnChangeRightsLevel" runat="server" Text="Edit" OnClick="btnChangeRightsLevel_Click" />
         <br />
         <asp:Button ID="btnDeleteAccount" runat="server" OnClick="btnDeleteAccount_Click" Text="Delete Account" />
 

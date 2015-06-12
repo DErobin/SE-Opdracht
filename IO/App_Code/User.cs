@@ -8,22 +8,22 @@ using System.Web;
 /// </summary>
 public class User
 {
-    private string aco;
-    private string lio;
-    private string rlevel;
+    private string aco; //Date the account was created on in string format
+    private string lio; //Last date the user logged in in string format
+    private string rlevel; //Rights of the user in string format
 
-    public int Id { get; set; }
-    public string Username { get; set; }
-    public string Email { get; set; }
-    public string Password {get; set;}
-    public int Age {get; set;}
-    public string AccountCreatedOn {get; set;}
-    public string LastLogin {get; set;}
-    public int ProfilePrivacy {get; set;}
-    public int MessagePrivacy {get; set;}
-    public int MassMessagePrivacy {get; set;}
-    public int Level {get; set;}
-    public string Rightslevel {get; set;}
+    public int Id { get; set; } //ID of the user
+    public string Username { get; set; } //Username of the user
+    public string Email { get; set; } //Emailadres of the user
+    public string Password {get; set;} //Users password
+    public int Age {get; set;} //Users age
+    public string AccountCreatedOn {get; set;} //Date the account was created on in string format
+    public string LastLogin {get; set;} //Date the account was last logged in
+    public int ProfilePrivacy {get; set;} //The level of profileprivacy the user has set
+    public int MessagePrivacy {get; set;} //The level of message privacy the user has set
+    public int MassMessagePrivacy {get; set;} //The level of massmessage privacy the user has set
+    public int Level {get; set;} //The level of the user
+    public string Rightslevel {get; set;} //The rights of a user in string format
 
 	public User(int id, string username, string email, string password, int age, string aco, string lio, 
         int ppriv, int mpriv, int mmpriv, int level, string rlevel)

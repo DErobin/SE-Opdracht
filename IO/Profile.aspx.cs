@@ -7,6 +7,8 @@ using System.Web.UI.WebControls;
 
 public partial class MyAccount : System.Web.UI.Page
 {
+    User user;
+    User logd;
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Request.QueryString["Username"] == null) //1e x
@@ -20,8 +22,8 @@ public partial class MyAccount : System.Web.UI.Page
             Server.Transfer("~/Frontpage.aspx");
         }
 
-        User user = DBHandler.User_FetchDetails(username);
-        User logd = Session["Logged_In"] as User;
+        user = DBHandler.User_FetchDetails(username);
+        logd = Session["Logged_In"] as User;
         if (logd != null && user.Id == logd.Id)
         {
             btnDeleteAccount.Enabled = true;
@@ -33,7 +35,7 @@ public partial class MyAccount : System.Web.UI.Page
             btnEditAccountDetails.Enabled = false;
         }
 
-        if(user.Rightslevel == "M" || user.Rightslevel == "A")
+        if(logd != null && (logd.Rightslevel == "M" || logd.Rightslevel == "A"))
         {
             btnChangeRightsLevel.Enabled = true;
             btnWarnAccount.Enabled = true;
@@ -73,5 +75,47 @@ public partial class MyAccount : System.Web.UI.Page
     protected void btnHome_Click(object sender, EventArgs e)
     {
         Response.Redirect("~/Frontpage.aspx");
+    }
+    protected void btnChangeRightsLevel_Click(object sender, EventArgs e)
+    {
+        //0n, 1m, 2a
+        if (user == null || logd == null)
+            return;
+        else
+        {
+            switch(ddlRightsLevel.SelectedIndex)
+            {
+                case 0: //Normal
+                    if(user.Rightslevel == "N")
+                    {
+                        Response.Write("<script>alert('User is already a normal user!')</script>");
+                        return;
+                    }
+                    DBHandler.User_SetRightsLevel(user, "N");
+                    lblUserPermissions.Text = "N";
+                    break;
+                case 1: //Mod
+                    if (user.Rightslevel == "M")
+                    {
+                        Response.Write("<script>alert('User is already a normal user!')</script>");
+                        return;
+                    }
+                    DBHandler.User_SetRightsLevel(user, "M");
+                    lblUserPermissions.Text = "M";
+                    break;
+                case 2: //Admin
+                    if (user.Rightslevel == "A")
+                    {
+                        Response.Write("<script>alert('User is already a normal user!')</script>");
+                        return;
+                    }
+                    DBHandler.User_SetRightsLevel(user, "A");
+                    lblUserPermissions.Text = "A";
+                    break;
+            }
+            Response.Write("<script>alert('Rights updated!')</script>");
+            string redir = "~/Profile.aspx?Username="+user.Username;
+            Server.Transfer(redir);
+        }
     }
 }

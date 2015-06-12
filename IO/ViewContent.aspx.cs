@@ -8,6 +8,8 @@ using System.Web.UI.HtmlControls;
 
 public partial class ViewContent : System.Web.UI.Page
 {
+    private int ContentID = -1;
+    private Content content;
     protected void Page_Load(object sender, EventArgs e)
     {
         string querystring = Request.QueryString["ContentID"];
@@ -16,7 +18,7 @@ public partial class ViewContent : System.Web.UI.Page
         {
             Response.Redirect("~/Frontpage.aspx");
         }
-        int ContentID = Convert.ToInt32(querystring);
+        ContentID = Convert.ToInt32(querystring);
 
         if(!DBHandler.Content_Exists(ContentID))
         {
@@ -24,7 +26,7 @@ public partial class ViewContent : System.Web.UI.Page
             Server.Transfer("~/Frontpage.aspx");
         }
 
-        Content content = DBHandler.Content_Fetch(ContentID);
+        content = DBHandler.Content_Fetch(ContentID);
         content.Headers = DBHandler.Content_FetchHeaders(content);
         content.Comments = DBHandler.Content_FetchComments(content);
         content.Tags = DBHandler.Content_FetchTags(content);
@@ -134,5 +136,68 @@ public partial class ViewContent : System.Web.UI.Page
     protected void btnHome_Click(object sender, EventArgs e)
     {
         Response.Redirect("~/Frontpage.aspx");
+    }
+    protected void btnComSubmit_Click(object sender, EventArgs e)
+    {
+
+        if(tbComText.Text == "" || Session["Logged_In"] == null)
+        {
+            Response.Write("<script>alert('Please fill in the Titel and Text and make sure yóu're logged in before submitting!')</script>");
+            return;
+        }
+        Content content = DBHandler.Content_Fetch(ContentID);
+        User user = Session["Logged_In"] as User;
+        DBHandler.Content_CreateComment(content.ContentID, user.Id, -1, tbComPath.Text, tbComText.Text);
+        Response.Write("<script>alert('Comment added!')</script>");
+        string redir = "~/ViewContent.aspx?ContentID=" + content.ContentID;
+        Response.Redirect(redir);
+    }
+    protected void btnPosThumb_Click(object sender, EventArgs e)
+    {
+        User user = Session["Logged_In"] as User;
+        if (content == null || Session["Logged_In"] == null)
+        {
+            Response.Write("<script>alert('Please login before thumbing!')</script>");
+            return;
+        }
+        if(user.Id == content.UploaderID)
+        {
+            Response.Write("<script>alert('You cant thumb your own content!')</script>");
+            return;
+        }
+        if(!DBHandler.User_HasThumbed(content, Session["Logged_In"] as User))
+        {
+            DBHandler.Content_Thumb(content, Session["Logged_In"] as User, true);
+        }
+        else
+        {
+            Response.Write("<script>alert('You have already thumbed this content!')</script>");
+            return;
+        }
+        lblThumbs.Text = Convert.ToString(Convert.ToInt32(lblThumbs.Text) + 1);
+    }
+    protected void btnNegThumb_Click(object sender, EventArgs e)
+    {
+        User user = Session["Logged_In"] as User;
+        if (content == null || Session["Logged_In"] == null)
+        {
+            Response.Write("<script>alert('Please login before thumbing!')</script>");
+            return;
+        }
+        if (user.Id == content.UploaderID)
+        {
+            Response.Write("<script>alert('You cant thumb your own content!')</script>");
+            return;
+        }
+        if (!DBHandler.User_HasThumbed(content, Session["Logged_In"] as User))
+        {
+            DBHandler.Content_Thumb(content, Session["Logged_In"] as User, false);
+        }
+        else
+        {
+            Response.Write("<script>alert('You have already thumbed this content!')</script>");
+            return;
+        }
+        lblThumbs.Text = Convert.ToString(Convert.ToInt32(lblThumbs.Text) - 1);
     }
 }

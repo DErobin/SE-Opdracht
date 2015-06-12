@@ -33,9 +33,9 @@
 
     </div>
     <div>
-        <p>Thumbs: <asp:Button ID="btnPosThumb" runat="server" Text="THU" />
+        <p>Thumbs: <asp:Button ID="btnPosThumb" runat="server" Text="THU" OnClick="btnPosThumb_Click" />
             <asp:Label ID="lblThumbs" runat="server" Text="###"></asp:Label>
-            <asp:Button ID="btnNegThumb" runat="server" Text="THD" />
+            <asp:Button ID="btnNegThumb" runat="server" Text="THD" OnClick="btnNegThumb_Click" />
         </p>
         <p>Views: <asp:Label ID="lblViews" runat="server" Text="###"></asp:Label>
         </p>
@@ -53,9 +53,8 @@
     <div>
         <h1>Comments(<asp:Label ID="lblComAmount" runat="server" Text="###"></asp:Label>):
         </h1>
-        <asp:Button ID="btnComSubmit" runat="server" Text="Submit" />
+        <asp:Button ID="btnComSubmit" runat="server" Text="Submit" OnClick="btnComSubmit_Click" />
         <br />
-        <asp:TextBox ID="tbComTitel" runat="server"></asp:TextBox>
         <br />
         <asp:TextBox ID="tbComText" runat="server" Height="112px" TextMode="MultiLine" Width="300px"></asp:TextBox>
         <br />

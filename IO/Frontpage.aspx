@@ -8,9 +8,11 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div style="height: 123px">
+    <div>
     
         <asp:Button ID="btnHome" runat="server" OnClick="btnHome_Click" Text="Home" />
+        <br />
+        <asp:Button ID="btnChannels" runat="server" Text="Channels" OnClick="btnChannels_Click" />
         <br />
         <asp:Button ID="btnUploadContent" runat="server" OnClick="btnUploadContent_Click" Text="Upload content" />
         <br />
@@ -18,6 +20,8 @@
     
         <br />
         <asp:Button ID="btnMyAccount" runat="server" Text="My Account" OnClick="btnMyAccount_Click" />
+        <br />
+        <asp:Button ID="btnInbox" runat="server" Text="Inbox" OnClick="btnInbox_Click" />
         <br />
         <asp:Label ID="lblLoggedIn" runat="server" Text="Currently logged in: -"></asp:Label>
     
@@ -39,7 +43,7 @@
             <br />
         </div>
         <div>
-        <div style="height: 326px; width: 965px">
+        <div>
             <asp:Label ID="Label1" runat="server" Text="Sort by: "></asp:Label>
             <asp:DropDownList ID="ddlSortBy" runat="server" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged" AutoPostBack="True">
                 <asp:ListItem>Thumbs</asp:ListItem>
